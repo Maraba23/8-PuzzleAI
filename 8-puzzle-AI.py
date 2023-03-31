@@ -64,13 +64,36 @@ class Puzzle8(State):
         return str(self.tabuleiro) + ' ' + self.operator
     
     def h(self):
-        heuristica = 0
-        meta = [[1, 2, 3],[8, 0, 4],[7, 6, 5]]
+        # pega a distancia de manhattan
+        distancia = 0
         for i in range(3):
             for j in range(3):
-                if self.tabuleiro[i][j] != meta[i][j]:
-                    heuristica += 1
-        return heuristica
+                if self.tabuleiro[i][j] != 0:
+                    if self.tabuleiro[i][j] == 1:
+                        distancia += abs(i - 0) + abs(j - 0)
+                    elif self.tabuleiro[i][j] == 2:
+                        distancia += abs(i - 0) + abs(j - 1)
+                    elif self.tabuleiro[i][j] == 3:
+                        distancia += abs(i - 0) + abs(j - 2)
+                    elif self.tabuleiro[i][j] == 4:
+                        distancia += abs(i - 1) + abs(j - 2)
+                    elif self.tabuleiro[i][j] == 5:
+                        distancia += abs(i - 2) + abs(j - 2)
+                    elif self.tabuleiro[i][j] == 6:
+                        distancia += abs(i - 2) + abs(j - 1)
+                    elif self.tabuleiro[i][j] == 7:
+                        distancia += abs(i - 2) + abs(j - 0)
+                    elif self.tabuleiro[i][j] == 8:
+                        distancia += abs(i - 1) + abs(j - 0)
+        return distancia
+    
+        # heuristica = 0
+        # meta = [[1, 2, 3],[8, 0, 4],[7, 6, 5]]
+        # for i in range(3):
+        #     for j in range(3):
+        #         if self.tabuleiro[i][j] != meta[i][j]:
+        #             heuristica += 1
+        # return heuristica
     
 
     def acha_posicao_0(self):
@@ -173,28 +196,33 @@ texto_pos = [botao_pos[0] + 10, botao_pos[1] + 10]
 
 # vamos pegar as instrucoes do puzzle 8 dps de solucionado
 
-tabuleiro = [[7,8,6],[2,3,5],[1,4,0]]
+# tabuleiro = [[3, 0, 2],[1, 8, 4],[7, 6, 5]]
+# tabuleiro = [[8,3,6],[7,5,4],[1,0,2]]
+
+run = True
+tabuleiro = [[0,3,2],[1,8,4],[5,6,7]]
 state = Puzzle8(tabuleiro, 'inicio')
 if state.verifica_possivel() == False:
     print('Estado impossivel')
+    run = False
 
+if run == True:
+    algorithm = AEstrela()
+    ts = time.time()
+    result = algorithm.search(state, trace=True)
+    tf = time.time()
+    if result != None:
+        print(result.show_path())
+        lista_instrucoes = result.show_path().split(';')
+        # remove os espaços em branco
+        lista_instrucoes = [x.strip() for x in lista_instrucoes]
+        lista_instrucoes.pop(0)
 
-algorithm = AEstrela()
-ts = time.time()
-result = algorithm.search(state, trace=True)
-tf = time.time()
-if result != None:
-    print(result.show_path())
-    lista_instrucoes = result.show_path().split(';')
-    # remove os espaços em branco
-    lista_instrucoes = [x.strip() for x in lista_instrucoes]
-    lista_instrucoes.pop(0)
-
-    # exemplo de lista de instrucoes: inicio ; direita ; direita ; baixo ; esquerda ; esquerda ; cima ; cima ; direita ; baixo
-else:
-    print('Nao achou solucao')
-print('Tempo de processamento em segundos: ' + str(tf-ts))
-print('O custo da solucao eh: '+ str(result.g))
+        # exemplo de lista de instrucoes: inicio ; direita ; direita ; baixo ; esquerda ; esquerda ; cima ; cima ; direita ; baixo
+    else:
+        print('Nao achou solucao')
+    print('Tempo de processamento em segundos: ' + str(tf-ts))
+    print('O custo da solucao eh: '+ str(result.g))
 
 
 # Depois de pegar as instrucoes, vamos criar uma lista com as posicoes dos quadrados
@@ -292,7 +320,7 @@ while True:
                     if len(lista_instrucoes) == 0:
                         break
                     pygame.display.flip()
-                    pygame.time.wait(300)
+                    pygame.time.wait(600)
 
     # vamos desenhar o botao de gerar instrucoes
     pygame.draw.rect(tela, azul, botao_gerar)
