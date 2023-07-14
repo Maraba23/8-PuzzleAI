@@ -200,7 +200,7 @@ texto_pos = [botao_pos[0] + 10, botao_pos[1] + 10]
 # tabuleiro = [[8,3,6],[7,5,4],[1,0,2]]
 
 run = True
-tabuleiro = [[0,3,2],[1,8,4],[5,6,7]]
+tabuleiro = [[5, 1, 2],[4, 0, 3],[7, 8, 6]]
 state = Puzzle8(tabuleiro, 'inicio')
 if state.verifica_possivel() == False:
     print('Estado impossivel')
